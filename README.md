@@ -1,5 +1,9 @@
 # Queryable World Models: Predicting Outcomes, Not Pixels
 
+Technical report DOI: https://doi.org/10.5281/zenodo.23040147
+
+Zenodo record: https://zenodo.org/records/23040147
+
 **Technical Report**  
 Orhan Üçok, BAİBÜ Computer Engineering
 
@@ -36,3 +40,8 @@ The closed-loop H=8 object-L2 planning gate is **≤0.10 m** and is **CLOSED**. 
 `qwm/` contains the model, PyBullet environment, data utilities, evaluation code, and planning implementation. `configs/`, `scripts/`, `tests/`, and [`schema.md`](schema.md) are included so the source can be inspected and its invariants tested. A small `data/debug` fixture is tracked solely for the source tests. Install [`requirements.txt`](requirements.txt) in a compatible Python environment and run `python -m pytest -q` to check the source. This public repository excludes the full collected datasets, rollouts, and trained checkpoints; it cannot independently reproduce the PDF's measurements without recovering the exact checkpoint and evaluation invocation described in Appendix B.
 
 [`reports/report.md`](reports/report.md) is a historical report from an earlier configuration. Its planning and horizon values must not be attributed to the retained step-5000 residual checkpoint or substituted for the locked tables above.
+
+## Citation
+
+Üçok, O. (2026). Queryable World Models: Predicting Outcomes, Not Pixels
+(Technical Report). Zenodo. https://doi.org/10.5281/zenodo.23040147
