@@ -1,0 +1,8 @@
+# Normalize to LF in the repo for deterministic, cross-platform files.
+* text=auto eol=lf
+*.png binary
+*.gif binary
+*.pdf binary
+*.npz binary
+*.pt binary
+*.urdf text eol=lf

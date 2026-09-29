@@ -1,0 +1,9 @@
+# eval.yaml — horizon evaluation. The horizon list is checked against
+# qwm/evaluation/protocol.py and must stay (1, 8, 16, 32).
+# This run reads the val split only.
+eval:
+  data_dir: data
+  split: val
+  batch_size: 16
+  run_root: runs
+  planner_config: configs/planner.yaml

@@ -1,0 +1,11 @@
+# model_latent.yaml — latent-only baseline. Same encoder and GRU as
+# model_qwm.yaml. No supervised query-state heads and no query loss weights.
+model:
+  name: latent_only
+  image_size: 84
+  in_channels: 3
+  conv_channels: [32, 64, 128, 128]
+  embed_dim: 128
+  action_embed: 32
+  gru_hidden: 128
+  latent_dim: 64

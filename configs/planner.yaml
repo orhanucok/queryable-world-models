@@ -1,0 +1,10 @@
+# planner.yaml — frozen CEM budget. Numbers must match qwm/evaluation/protocol.py.
+# Latent-only uses the same horizon, population, elites, and iterations.
+planner:
+  horizon: 8
+  population: 64
+  elites: 4
+  iterations: 4
+  std_min: 0.1
+  episodes: 50
+  seed: 0

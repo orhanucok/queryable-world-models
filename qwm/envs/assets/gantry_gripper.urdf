@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!-- Gantry-style tabletop manipulator for QWM.
+
+Design matches the FROZEN action space exactly (ee-delta + gripper):
+  - 3 prismatic joints (X, Y, Z) => end-effector (wrist/paddle) position is
+    directly position-controlled; no IK, no singularities.
+  - 2 mirrored prismatic finger joints => one gripper command sets the
+    symmetric opening.
+
+World frame: base at table-side corner (0, 0, 0) on the floor; the table top
+surface is z = 0.75 (see qwm/data/schema.py for frozen constants).
+
+Motion frame (wrist/paddle center = EE reference point "grip_xyz"):
+  wrist_x = -0.55 + q_x      q_x in [0, 1.1]   (x_carriage)
+  wrist_y = -0.55 + q_y      q_y in [0, 1.1]   (y_carriage)
+  wrist_z =  1.50 + q_z      q_z in [-0.64, -0.44]  (z_carriage, downward)
+The self-imposed EE workspace (frozen in schema.py) is tighter:
+  x, y in [-0.40, 0.40], z in [0.86, 1.06].
+Fingers hang below the paddle bar: z in [wrist-0.105, wrist-0.005],
+opening 2*q_f with q_f in [0.012, 0.045] (opening 0.024..0.090 m).
+-->
+<robot name="gantry_gripper">
+
+  <material name="rail"><color rgba="0.45 0.47 0.50 1.0"/></material>
+  <material name="carriage"><color rgba="0.25 0.55 0.85 1.0"/></material>
+  <material name="rod"><color rgba="0.30 0.32 0.35 1.0"/></material>
+  <material name="paddle"><color rgba="0.85 0.55 0.15 1.0"/></material>
+  <material name="finger"><color rgba="0.10 0.10 0.12 1.0"/></material>
+
+  <!-- Static column at the corner, out of the workspace -->
+  <link name="base">
+    <inertial><origin xyz="0 0 0"/><mass value="0"/><inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/></inertial>
+    <visual><origin xyz="-0.55 -0.55 0.8"/><geometry><box size="0.10 0.10 1.60"/></geometry><material name="rail"/></visual>
+    <collision><origin xyz="-0.55 -0.55 0.8"/><geometry><box size="0.10 0.10 1.60"/></geometry></collision>
+  </link>
+
+  <!-- X rail at height 1.5, sliding along X -->
+  <link name="x_carriage">
+    <inertial><origin xyz="0.625 0 0"/><mass value="2.0"/><inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/></inertial>
+    <visual><origin xyz="0.625 0 0"/><geometry><box size="1.25 0.05 0.05"/></geometry><material name="rail"/></visual>
+    <collision><origin xyz="0.625 0 0"/><geometry><box size="1.25 0.05 0.05"/></geometry></collision>
+  </link>
+  <joint name="x_axis" type="prismatic">
+    <parent link="base"/><child link="x_carriage"/>
+    <origin xyz="-0.55 -0.55 1.5" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0" upper="1.1" effort="500" velocity="2.0"/>
+    <dynamics damping="2.0" friction="0.0"/>
+  </joint>
+
+  <!-- Y rail riding the X rail -->
+  <link name="y_carriage">
+    <inertial><origin xyz="0 0.625 0"/><mass value="2.0"/><inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/></inertial>
+    <visual><origin xyz="0 0.625 0"/><geometry><box size="0.05 1.25 0.05"/></geometry><material name="rail"/></visual>
+    <collision><origin xyz="0 0.625 0"/><geometry><box size="0.05 1.25 0.05"/></geometry></collision>
+  </link>
+  <joint name="y_axis" type="prismatic">
+    <parent link="x_carriage"/><child link="y_carriage"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0" upper="1.1" effort="500" velocity="2.0"/>
+    <dynamics damping="2.0" friction="0.0"/>
+  </joint>
+
+  <!-- Vertical rod: its origin IS the end-effector reference -->
+  <link name="z_carriage">
+    <inertial><origin xyz="0 0 0.375"/><mass value="1.0"/><inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/></inertial>
+    <visual><origin xyz="0 0 0.375"/><geometry><box size="0.035 0.035 0.75"/></geometry><material name="rod"/></visual>
+    <collision><origin xyz="0 0 0.375"/><geometry><box size="0.035 0.035 0.75"/></geometry></collision>
+  </link>
+  <joint name="z_axis" type="prismatic">
+    <parent link="y_carriage"/><child link="z_carriage"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.64" upper="-0.44" effort="300" velocity="2.0"/>
+    <dynamics damping="2.0" friction="0.0"/>
+  </joint>
+
+  <!-- Paddle bar at the EE point (wrist == z_carriage origin) -->
+  <link name="wrist">
+    <inertial><origin xyz="0 0 0"/><mass value="0.3"/><inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/></inertial>
+    <visual><origin xyz="0 0 0"/><geometry><box size="0.12 0.09 0.015"/></geometry><material name="paddle"/></visual>
+    <collision><origin xyz="0 0 0"/><geometry><box size="0.12 0.09 0.015"/></geometry></collision>
+  </link>
+  <joint name="wrist_fix" type="fixed">
+    <parent link="z_carriage"/><child link="wrist"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Two mirrored fingers: opening = 2*q_f -->
+  <link name="finger_left">
+    <inertial><origin xyz="0 0 0"/><mass value="0.05"/><inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/></inertial>
+    <visual><origin xyz="0 0 0"/><geometry><box size="0.018 0.03 0.10"/></geometry><material name="finger"/></visual>
+    <collision><origin xyz="0 0 0"/><geometry><box size="0.018 0.03 0.10"/></geometry></collision>
+  </link>
+  <joint name="finger_left" type="prismatic">
+    <parent link="wrist"/><child link="finger_left"/>
+    <origin xyz="0 0 -0.055" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.012" upper="0.045" effort="40" velocity="0.5"/>
+    <dynamics damping="1.0" friction="0.0"/>
+  </joint>
+
+  <link name="finger_right">
+    <inertial><origin xyz="0 0 0"/><mass value="0.05"/><inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/></inertial>
+    <visual><origin xyz="0 0 0"/><geometry><box size="0.018 0.03 0.10"/></geometry><material name="finger"/></visual>
+    <collision><origin xyz="0 0 0"/><geometry><box size="0.018 0.03 0.10"/></geometry></collision>
+  </link>
+  <joint name="finger_right" type="prismatic">
+    <parent link="wrist"/><child link="finger_right"/>
+    <origin xyz="0 0 -0.055" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="0.012" upper="0.045" effort="40" velocity="0.5"/>
+    <dynamics damping="1.0" friction="0.0"/>
+  </joint>
+
+</robot>

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qwm"
+version = "0.1.0"
+description = "Queryable World Models: Predicting Outcomes, Not Pixels"
+readme = "README.md"
+requires-python = "==3.11.*"
+# NOTE: torch (CUDA build) and pybullet are installed via requirements.txt /
+# the documented pip command, NOT here, so the CUDA wheel is never replaced
+# by a CPU wheel and the PyBullet source build stays explicit.
+dependencies = [
+    "numpy>=1.24",
+    "PyYAML>=6.0",
+    "Pillow>=10.0",
+    "imageio>=2.31",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+teleop = ["pygame>=2.5"]
+
+[tool.setuptools.packages.find]
+include = ["qwm*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

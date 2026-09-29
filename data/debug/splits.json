@@ -1,0 +1,27 @@
+{
+  "counts": {
+    "test": 1,
+    "train": 8,
+    "val": 1
+  },
+  "episode_ids": {
+    "test": [
+      1
+    ],
+    "train": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9
+    ],
+    "val": [
+      8
+    ]
+  },
+  "policy": "episode_80_10_10",
+  "seed": 0
+}

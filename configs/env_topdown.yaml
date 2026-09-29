@@ -1,0 +1,35 @@
+# Camera-only variant for the closer top-down 1-object collect.
+# Schema, physics, and the default configs/env.yaml camera are unchanged.
+env:
+  name: tabletop
+  render: direct
+
+  obs:
+    res: 84
+    channels: 3
+
+  physics:
+    time_step: 0.0041667
+    substeps_per_action: 20
+    solver_iterations: 50
+
+  camera:
+    distance: 0.70
+    yaw: 0.0
+    pitch: -78.0
+    target: [0.0, 0.0, 0.75]
+    fov: 50.0
+
+  objects:
+    num_objects: 1
+    spawn_radius_xy: 0.33
+
+  robot:
+    max_velocity: 1.5
+    force_xy: 500.0
+    force_z: 300.0
+    force_finger: 40.0
+    home_xyz: [0.0, 0.0, 0.92]
+
+  episode:
+    length: 50

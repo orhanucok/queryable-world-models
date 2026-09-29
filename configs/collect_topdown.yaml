@@ -1,0 +1,10 @@
+# 100 scripted 1-object episodes. Camera comes from configs/env_topdown.yaml.
+collect:
+  seed: 0
+  episodes: 100
+  out: data/oneobj5k_topdown
+  env_config: configs/env_topdown.yaml
+  policy: scripted
+  sources: [scripted]
+  num_objects_min: 1
+  num_objects_max: 1

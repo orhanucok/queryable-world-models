@@ -1,0 +1,13 @@
+# collect.yaml — dataset collection.
+# Debug gate (passed): 10 episodes x 50 = 500 transitions, --out data/debug.
+# Full set (passed): --episodes 200 --out data = 10,000 transitions.
+# This file's default stays the debug command. The 10k run is the CLI override.
+collect:
+  seed: 0
+  episodes: 10
+  out: data/debug
+  env_config: configs/env.yaml
+  policy: mixed                 # scripted | random | teleop | mixed
+  sources: [scripted, random]   # mixed draws one source per episode
+  num_objects_min: 1            # inclusive
+  num_objects_max: 8            # inclusive; env reset accepts up to Nmax=20

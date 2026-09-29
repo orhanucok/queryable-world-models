@@ -1,0 +1,18 @@
+# QWM dependencies (Python 3.11)
+#
+# PyTorch is installed SEPARATELY with the CUDA build for the RTX 4050 6GB:
+#   python -m pip install torch --index-url https://download.pytorch.org/whl/cu124
+# torch>=2.2
+#
+# Core (always required)
+numpy>=1.24
+PyYAML>=6.0
+Pillow>=10.0
+imageio>=2.31
+matplotlib>=3.8
+pytest>=8.0
+# Simulator: PyBullet compiles from source on Windows (needs CMake + MSVC
+# Build Tools). Documented fallback if genuinely blocking: mujoco.
+pybullet>=3.2.5
+# Optional teleop input for data collection (collection works without it)
+pygame>=2.5

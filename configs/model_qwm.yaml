@@ -1,0 +1,19 @@
+# model_qwm.yaml — QWM/full. Encoder and GRU sizes are mirrored by
+# model_latent.yaml. Query heads are the only extra parameters.
+model:
+  name: qwm
+  image_size: 84
+  in_channels: 3
+  conv_channels: [32, 64, 128, 128]
+  embed_dim: 128
+  action_embed: 32
+  gru_hidden: 128
+  latent_dim: 64
+  residual: true          # grip/obj XYZ are deltas on the previous query state
+loss:
+  # λ_pos. Position terms raised so the checkpoint can localize objects.
+  grip_xyz: 10.0
+  obj_xyz: 10.0
+  upright: 0.5
+  contact: 0.5
+  on_table: 0.5
